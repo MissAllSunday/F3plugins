@@ -16,7 +16,6 @@ class Gravatar extends \Prefab
 		'r' => 'g',
 	];
 	public $config = [];
-	public $email = '';
 	public $url = 'https://www.gravatar.com/avatar/';
 
 	function __construct()
@@ -44,7 +43,7 @@ class Gravatar extends \Prefab
 
 	function setUrl($email = '')
 	{
-		return $this->url . md5(strtolower(trim($this->email))) .'?'.  http_build_query($this->options);
+		return $this->url . md5(strtolower(trim($email))) .'?'.  http_build_query($this->options);
 	}
 
 	function route($f3, $args)
