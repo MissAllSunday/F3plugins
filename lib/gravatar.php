@@ -32,7 +32,7 @@ class Gravatar extends \Prefab
 		$this->url = $f3->exists('GRAVATAR.url') ? $f3->get('GRAVATAR.url') : $this->url;
 
 		// Set the route.
-		$f3->route(array('GET /gravatar/@email'), [$this,'route'], ($f3->exists('GRAVATAR.cache') ?: 86400));
+		$f3->route(array('GET /gravatar/@email'), [$this,'route'], ($f3->exists('GRAVATAR.cache') ? $f3->get('GRAVATAR.cache') : 86400));
 	}
 
 	function get($email = '', $options = [])
