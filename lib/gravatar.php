@@ -20,7 +20,7 @@ class Gravatar extends \Prefab
 
 	function __construct()
 	{
-		$f3=\Base::instance();
+		$f3 = \Base::instance();
 
 		$this->config = $f3->get('GRAVATAR');
 
@@ -55,7 +55,7 @@ class Gravatar extends \Prefab
 		if (!empty($gravatar) && $gravatar['headers'][0] == 'HTTP/1.1 200 OK')
 		{
 			header($gravatar['headers'][3]);
-			echo $f3->read($gravatar['body']);
+			echo $gravatar['body'];
 		}
 
 		// No? then build a generic identicon.
