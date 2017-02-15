@@ -13,7 +13,7 @@ The class also provides a generic F3 route named gravatar which accepts an email
 GET /gravatar/@email
 ```
 
-If no email param is provided or gravatar return an error, the class will generate a generic identicon via \Image()->identicon();
+If no email param is provided or gravatar returns an error, the class will generate a generic identicon via \Image()->identicon();
 
 To enable the route, put a call to \Gravatar::instance(); on your index.php file before the call to $f3->run(); or wherever you prefer.
 
@@ -36,7 +36,7 @@ You can overwrite the default options by setting a F3 hive var:
   - s size
   - d default gravatar type
   - r gravatar rating
-- cache If the GET /gravatar/ route is been used, this setting is used to set a default F3 routing cache. Defaults to one day.
+- cache If the GET /gravatar/ route is been used, this setting is used to set a F3 routing cache. Defaults to one day.
 - url The url used to request a gravatar.
 - mx boolean, defines the second param in \Audit::instance()->email() which checks for the email mx records.
 
