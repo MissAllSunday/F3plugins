@@ -12,7 +12,9 @@ class Form extends \Prefab
 {
 	public $options = [
 		'group' => 'data',
-		'prefix' => '',
+		'prefix' => '',,
+		'type' => 'horizontal',
+		'url' => '',
 	];
 	public $items = [];
 	protected $_counter = 0;
@@ -44,14 +46,16 @@ class Form extends \Prefab
 		$item['html'] = str_replace([
 			'{name}',
 			'{id}',
-			'{class}'
+			'{class}',
+			'{extra}',
 		], [
 			'name="'. ($this->options['group'] ? $this->options['name'] .'['. $item['name'] .']' : $item['name']) .'"',
 			'id="form_'. $item['name'] .'"',
 			(!empty($item['class']) ? $item['class'] : ''),
+			(!empty($item['extra']) ? $item['extra'] : ''),
 		], $item['html']);
 
-		$this->items[++$this->_counter] = $item;
+		return $this->items[++$this->_counter] = $item;
 	}
 
 	function getitems($id = 0)
@@ -77,7 +81,40 @@ class Form extends \Prefab
 		$item['value'] = empty($item['value']) ? '' : $item['value'];
 		$rows = 'rows="'. (!empty($item['rows']) ? $item['size']['rows'] : 5) .'"';
 
-		$item['html'] = '<'. $item['type'] .'  '. $rows .' class="form-control {class}" {name} {id}>'. $item['value'] .'</'. $item['type'] .'>';
+		$item['html'] = '<'. $item['type'] .'  '. $rows .' class="form-control {class}" {name} {id} {extra}>'. $item['value'] .'</'. $item['type'] .'>';
+
+		return $this->addElement($item);
+	}
+
+	function addHTML($item = array())
+	{
+		// Kinda needs this...
+		if (empty($item) || empty($item['name']))
+			return;
+
+		$this->setParamValues($item);
+		$item['type'] = 'html';
+
+		return $this->addElement($item);
+	}
+
+	function addHiddenField($name, $value)
+	{
+		$item['type'] = 'hidden';
+		$item['name'] = $name;
+		$item['html'] = '<input type="'. $item['type'] .'" {name} {id} value="'. $value .'" />';
+		return $this->addElement($item);
+	}
+
+	function addText($item = array())
+	{
+		// Kinda needs this...
+		if (empty($item) || empty($item['name']))
+			return;
+
+		$item['type'] = 'text';
+
+		$item['html'] = '<input type="'. $item['type'] .'" {name} {id} class="form-control {class}" {extra}>';
 
 		return $this->addElement($item);
 	}
@@ -85,15 +122,40 @@ class Form extends \Prefab
 	function addCheck($item = array())
 	{
 		// Kinda needs this...
-		if (empty($param) || empty($param['name']))
+		if (empty($item) || empty($item['name']))
 			return;
 
-		$param['type'] = 'checkbox';
-		$param['checked'] = empty($param['checked']) ? '' : 'checked="checked"';
-		$param['disabled'] = !empty($param['disabled']) ? 'disabled' : '';
+		$item['type'] = 'checkbox';
+		$item['checked'] = empty($item['checked']) ? '' : 'checked="checked"';
 
-		$param['html'] = '<input type="'. $param['type'] .'" {name} {id} value="1" '. $param['checked'] .' class="{class}">';
+		$item['html'] = '<input type="'. $item['type'] .'" {name} {id} value="1" '. $item['checked'] .' class="{class}" {extra}>';
 
-		return $this->addElement($param);
+		return $this->addElement($item);
 	}
+
+	function addRadio($item = array())
+	{
+		// Kinda needs this...
+		if (empty($item) || empty($item['name']))
+			return;
+
+		$item['type'] = 'radio';
+		$item['checked'] = empty($item['checked']) ? '' : 'checked="checked"';
+		$item['disabled'] = !empty($item['disabled']) ? 'disabled' : '';
+		$item['value'] = !empty($item['value']) ? $item['value'] : '';
+		$item['inline'] = !empty($item['inline']);
+
+		$item['html'] = '<input type="'. $item['type'] .'" {name} {id} value="'. $item['value'] .'" '. $item['checked'] .' class="{class}" {extra}>';
+
+		return $this->addElement($item);
+	}
+
+	function build($customVar = '')
+	{
+		$this->f3->set($customVar ?: 'form_' $this->options['name'], [
+			'options' => $this->options,
+			'items' => $this->items,
+		]);
+	}
+
 }
