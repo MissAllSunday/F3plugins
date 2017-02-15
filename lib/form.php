@@ -12,11 +12,12 @@ class Form extends \Prefab
 {
 	public $options = [
 		'group' => 'data',
-		'prefix' => '',,
+		'prefix' => '',
 		'type' => 'horizontal',
 		'url' => '',
 	];
 	public $items = [];
+	public $buttons = [];
 	protected $_counter = 0;
 
 	function __construct()
@@ -28,19 +29,27 @@ class Form extends \Prefab
 	}
 
 	function setOptions($options = array())
-		{
-			$this->options = array_merge($this->_options, $options);
-		}
+	{
+		$this->options = array_merge($this->_options, $options);
+	}
 
-	function addElement($item)
+	function button($button)
+	{
+		// No text? use the name as a text key then!
+		if (empty($item['text']))
+			$item['text'] = $this->f3->get($this->options['prefix'] . $item['name']);
+
+		return $this->buttons[] = $button;
+	}
+
+	function element($item)
 	{
 		// No text? use the name as a text key then!
 		if (empty($item['text']))
 			$item['text'] = $this->f3->get($this->options['prefix'] . $item['name']);
 
 		// Give it a chance to use a full text string.
-		if (empty($item['desc']))
-			$item['desc']  = $this->f3->get($this->options['prefix'] . $item['name'] .'_desc');
+		$item['desc']  = !empty($item['desc']) ? $item['desc'] : '';
 
 		$item['id'] = 'form_'. $item['name'];
 
@@ -60,19 +69,6 @@ class Form extends \Prefab
 		return $this->items[++$this->_counter] = $item;
 	}
 
-	function getitems($id = 0)
-	{
-		return !empty($id) ? $this->items[$id] : $this->items;
-	}
-
-	function modifyElement($id = 0, $data = array())
-	{
-		if (empty($id) || empty($data) || empty($this->items[$id]))
-			return false;
-
-		$this->items[$id] = $data;
-	}
-
 	function addTextArea($item = array())
 	{
 		// Kinda needs this...
@@ -85,7 +81,7 @@ class Form extends \Prefab
 
 		$item['html'] = '<'. $item['type'] .'  '. $rows .' class="form-control {class}" {name} {id} {extra}>'. $item['value'] .'</'. $item['type'] .'>';
 
-		return $this->addElement($item);
+		return $this->element($item);
 	}
 
 	function addHTML($item = array())
@@ -97,7 +93,7 @@ class Form extends \Prefab
 		$this->setParamValues($item);
 		$item['type'] = 'html';
 
-		return $this->addElement($item);
+		return $this->element($item);
 	}
 
 	function addHiddenField($name, $value)
@@ -105,7 +101,7 @@ class Form extends \Prefab
 		$item['type'] = 'hidden';
 		$item['name'] = $name;
 		$item['html'] = '<input type="'. $item['type'] .'" {name} {id} value="'. $value .'" />';
-		return $this->addElement($item);
+		return $this->element($item);
 	}
 
 	function addText($item = array())
@@ -118,7 +114,7 @@ class Form extends \Prefab
 
 		$item['html'] = '<input type="'. $item['type'] .'" {name} {id} class="form-control {class}" {extra}>';
 
-		return $this->addElement($item);
+		return $this->element($item);
 	}
 
 	function addCheck($item = array())
@@ -132,7 +128,7 @@ class Form extends \Prefab
 
 		$item['html'] = '<input type="'. $item['type'] .'" {name} {id} value="1" '. $item['checked'] .' class="{class}" {extra}>';
 
-		return $this->addElement($item);
+		return $this->element($item);
 	}
 
 	function addRadio($item = array())
@@ -149,7 +145,19 @@ class Form extends \Prefab
 
 		$item['html'] = '<input type="'. $item['type'] .'" {name} {id} value="'. $item['value'] .'" '. $item['checked'] .' class="{class}" {extra}>';
 
-		return $this->addElement($item);
+		return $this->element($item);
+	}
+
+	function addButton($item = [])
+	{
+		$button = [
+			'type' => 'input',
+			'class' => 'btn-default',
+			'value' => '',
+			'extra' => '',
+		];
+
+		return $this->button(array_merge($button, $item));
 	}
 
 	function build($customVar = '')
@@ -157,7 +165,25 @@ class Form extends \Prefab
 		$this->f3->set(($customVar ?: '_form'), [
 			'options' => $this->options,
 			'items' => $this->items,
+			'buttons' => $this->buttons,
 		]);
 	}
 
+	function getCounter()
+	{
+		return $this->_counter;
+	}
+
+	function getitems($id = 0)
+	{
+		return !empty($id) ? $this->items[$id] : $this->items;
+	}
+
+	function modifyElement($id = 0, $data = array())
+	{
+		if (empty($id) || empty($data) || empty($this->items[$id]))
+			return false;
+
+		$this->items[$id] = $data;
+	}
 }
