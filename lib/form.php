@@ -42,6 +42,8 @@ class Form extends \Prefab
 		if (empty($item['desc']))
 			$item['desc']  = $this->f3->get($this->options['prefix'] . $item['name'] .'_desc');
 
+		$item['id'] = 'form_'. $item['name'];
+
 		// Normalize element.
 		$item['html'] = str_replace([
 			'{name}',
@@ -50,7 +52,7 @@ class Form extends \Prefab
 			'{extra}',
 		], [
 			'name="'. ($this->options['group'] ? $this->options['name'] .'['. $item['name'] .']' : $item['name']) .'"',
-			'id="form_'. $item['name'] .'"',
+			'id="'. $item['id'] .'"',
 			(!empty($item['class']) ? $item['class'] : ''),
 			(!empty($item['extra']) ? $item['extra'] : ''),
 		], $item['html']);
@@ -152,7 +154,7 @@ class Form extends \Prefab
 
 	function build($customVar = '')
 	{
-		$this->f3->set($customVar ?: 'form_' $this->options['name'], [
+		$this->f3->set(($customVar ?: '_form'), [
 			'options' => $this->options,
 			'items' => $this->items,
 		]);

@@ -1,0 +1,10 @@
+<form class="form-{{@_form.options.type}}">
+	<div class="form-group">
+		<repeat group="{{ @_form.items }}" value="{{ @item }}">
+			<switch expr="{{ @item.type }}">
+				<case value="text" break="{{ TRUE }}">
+				</case>
+			</switch>
+		</repeat>
+	</div>
+</form>
