@@ -1,48 +1,57 @@
-<form class="form-{{@_form.options.type}}">
-	<div class="form-group">
-		<repeat group="{{ @_form.items }}" value="{{ @item }}">
-			<switch expr="{{ @item.type }}">
-				<case value="checkbox" break="{{ TRUE }}">
+<form class="form-{{@_form.options.type}}" action="{{@BASE}}/{{@_form.options.action}}" accept-charset="{{@_form.options.charset}}" method="{{@_form.options.method}}" enctype="{{@_form.options.enctype}}" target="{{@_form.options.target}}">
+	<repeat group="{{ @_form.items }}" value="{{ @item }}">
+		<div class="form-group">
+		<switch expr="{{ @item.type }}">
+			<case value="checkbox" break="{{ TRUE }}">
+				<div class="{{ @item.type }} {{ @item.disabled }}">
+					<label>
+						{{@item.html | raw}}
+					{{@item.text}}
+					</label>
+				</div>
+			</case>
+			<case value="radio" break="{{ TRUE }}">
+				<div class="col-sm-offset-2 col-sm-10">
 					<div class="{{ @item.type }} {{ @item.disabled }}">
 						<label>
-							{{@item.html}}
-						{{@item.text}}
-						</label>
-					</div>
-				</case>
-				<case value="radio" break="{{ TRUE }}">
-					<div class="{{ @item.type }} {{ @item.disabled }}">
-						<label>
-							{{@item.html}}
+							{{@item.html | raw}}
 							{{@item.text}}
 						</label>
 					</div>
-				</case>
-				<default>
-					<label for="{{@item.id}}">
-						{{@item.text}}
-					</label>
-					{{@item.html}}
-					<check if="{{ @item.desc }}">
-						<span id="helpBlock" class="help-block">
-							{{ @item.desc }}
-						</span>
-					</check>
-				</default>
-			</switch>
-		</repeat>
-		<repeat group="{{ @_form.buttons }}" value="{{ @button }}">
-			<switch expr="{{ @button.type }}">
-				<case value="anchor" break="{{ TRUE }}">
-					<a class="btn {{@button.class}}" href="{{@button.href}}" role="button" {{@button.extra}}>{{@button.value}}</a>
-				</case>
-				<case value="button" break="{{ TRUE }}">
-					<button class="btn {{@button.class}}" type="button" {{@button.extra}}>{{@button.value}}</button>
-				</case>
-				<case value="input" break="{{ TRUE }}">
-					<input class="btn {{@button.class}}" type="submit" {{@button.extra}}>{{@button.value}}</input>
-				</case>
-			</switch>
-		</repeat>
+				</div>
+			</case>
+			<case value="hidden" break="{{ TRUE }}">
+				{{@item.html | raw}}
+			</case>
+			<default>
+				<label for="{{@item.id}}" class="col-sm-2 control-label">
+					{{@item.text}}
+				</label>
+				<div class="col-sm-10">
+				{{@item.html | raw}}
+				<check if="{{ @item.desc }}">
+					<span id="helpBlock" class="help-block">
+						{{ @item.desc }}
+					</span>
+				</check>
+				</div>
+			</default>
+		</switch>
+		</div>
+	</repeat>
+	<div class="col-sm-10">
+	<repeat group="{{ @_form.buttons }}" value="{{ @button }}">
+		<switch expr="{{ @button.type }}">
+			<case value="anchor" break="{{ TRUE }}">
+				<a class="btn {{@button.class}}" href="{{@button.href}}" role="button" {{@button.extra}}>{{@button.text}}</a>
+			</case>
+			<case value="button" break="{{ TRUE }}">
+				<button class="btn {{@button.class}}" type="button" {{@button.extra}}>{{@button.text}}</button>
+			</case>
+			<case value="input" break="{{ TRUE }}">
+				<input class="btn {{@button.class}}" type="submit" {{@button.extra}} value="{{@button.text}}">
+			</case>
+		</switch>
+	</repeat>
 	</div>
 </form>
