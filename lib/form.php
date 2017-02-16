@@ -87,14 +87,26 @@ class Form extends \Prefab
 		return $this->element($item);
 	}
 
-	function addHTML($item = [])
+	function addHtml($item = [])
 	{
 		// Kinda needs this...
 		if (empty($item) || empty($item['name']))
 			return;
 
-		$this->setParamValues($item);
 		$item['type'] = 'html';
+
+		return $this->element($item);
+	}
+
+	function addCaptcha($item = [])
+	{
+		// Kinda needs this...
+		if (empty($item) || empty($item['name']))
+			return;
+
+		$item['type'] = 'captcha';
+
+		$item['html'] = '<input type="'. $item['type'] .'" {name} {id} class="form-control {class}" value="'. $item['value'] .'" {extra}>';
 
 		return $this->element($item);
 	}
@@ -129,7 +141,7 @@ class Form extends \Prefab
 		$item['type'] = 'checkbox';
 		$item['checked'] = empty($item['checked']) ? '' : 'checked="checked"';
 
-		$item['html'] = '<input type="'. $item['type'] .'" {name} {id} value="1" '. $item['checked'] .' class="{class}" {extra}>';
+		$item['html'] = '<input type="hidden" {name}  value="0" /><input type="'. $item['type'] .'" {name} {id} value="1" '. $item['checked'] .' class="{class}" {extra}>';
 
 		return $this->element($item);
 	}
@@ -146,7 +158,7 @@ class Form extends \Prefab
 		$item['value'] = !empty($item['value']) ? $item['value'] : '';
 		$item['inline'] = !empty($item['inline']);
 
-		$item['html'] = '<input type="'. $item['type'] .'" {name} {id} value="'. $item['value'] .'" '. $item['checked'] .' class="{class}" {extra}>';
+		$item['html'] = '<input type="hidden" {name} value="0" /><input type="'. $item['type'] .'" {name} {id} value="'. $item['value'] .'" '. $item['checked'] .' class="{class}" {extra}>';
 
 		return $this->element($item);
 	}

@@ -23,6 +23,24 @@
 			<case value="hidden" break="{{ TRUE }}">
 				{{@item.html | raw}}
 			</case>
+			<case value="captcha" break="{{ TRUE }}">
+				<label for="{{@item.id}}" class="col-sm-2 control-label">
+					{{@item.text}}
+				</label>
+				<div class="col-sm-10">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<img src="{{@BASE}}/{{@item.url}}" />
+						</div>
+					</div>
+					{{@item.html | raw}}
+				<check if="{{ @item.desc }}">
+					<span id="helpBlock" class="help-block">
+						{{ @item.desc }}
+					</span>
+				</check>
+				</div>
+			</case>
 			<default>
 				<label for="{{@item.id}}" class="col-sm-2 control-label">
 					{{@item.text}}
