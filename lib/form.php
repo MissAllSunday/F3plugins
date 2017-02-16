@@ -10,12 +10,7 @@
 
 class Form extends \Prefab
 {
-	public $options = [
-		'group' => 'data',
-		'prefix' => '',
-		'type' => 'horizontal',
-		'url' => '',
-	];
+	public $options = [];
 	public $items = [];
 	public $buttons = [];
 	protected $_counter = 0;
@@ -24,21 +19,29 @@ class Form extends \Prefab
 	{
 		$this->f3 = \Base::instance();
 
+		$this->options = [
+			'group' => 'data',
+			'prefix' => '',
+			'type' => 'horizontal',
+			'action' => '',
+			'charset' => $this->f3->get('ENCODING'),
+			'enctype' => 'multipart/form-data',
+			'method' => 'post',
+			'target' => '_self',
+		];
+
 		// Allow overwriting the default values.
-		$this->options = $f3->exists('FORM') ? array_merge($this->options, $f3->get('FORM');
+		if ($this->f3->exists('FORM'))
+			$this->options = array_merge($this->options, $f3->get('FORM'));
 	}
 
-	function setOptions($options = array())
+	function setOptions($options = [])
 	{
-		$this->options = array_merge($this->_options, $options);
+		$this->options = array_merge($this->options, $options);
 	}
 
 	function button($button)
 	{
-		// No text? use the name as a text key then!
-		if (empty($item['text']))
-			$item['text'] = $this->f3->get($this->options['prefix'] . $item['name']);
-
 		return $this->buttons[] = $button;
 	}
 
@@ -60,7 +63,7 @@ class Form extends \Prefab
 			'{class}',
 			'{extra}',
 		], [
-			'name="'. ($this->options['group'] ? $this->options['name'] .'['. $item['name'] .']' : $item['name']) .'"',
+			'name="'. ($this->options['group'] ? $this->options['group'] .'['. $item['name'] .']' : $item['name']) .'"',
 			'id="'. $item['id'] .'"',
 			(!empty($item['class']) ? $item['class'] : ''),
 			(!empty($item['extra']) ? $item['extra'] : ''),
@@ -69,7 +72,7 @@ class Form extends \Prefab
 		return $this->items[++$this->_counter] = $item;
 	}
 
-	function addTextArea($item = array())
+	function addTextArea($item = [])
 	{
 		// Kinda needs this...
 		if (empty($item) || empty($item['name']))
@@ -77,14 +80,14 @@ class Form extends \Prefab
 
 		$item['type'] = 'textarea';
 		$item['value'] = empty($item['value']) ? '' : $item['value'];
-		$rows = 'rows="'. (!empty($item['rows']) ? $item['size']['rows'] : 5) .'"';
+		$rows = 'rows="'. (!empty($item['rows']) ? $item['rows'] : 5) .'"';
 
 		$item['html'] = '<'. $item['type'] .'  '. $rows .' class="form-control {class}" {name} {id} {extra}>'. $item['value'] .'</'. $item['type'] .'>';
 
 		return $this->element($item);
 	}
 
-	function addHTML($item = array())
+	function addHTML($item = [])
 	{
 		// Kinda needs this...
 		if (empty($item) || empty($item['name']))
@@ -104,7 +107,7 @@ class Form extends \Prefab
 		return $this->element($item);
 	}
 
-	function addText($item = array())
+	function addText($item = [])
 	{
 		// Kinda needs this...
 		if (empty($item) || empty($item['name']))
@@ -112,12 +115,12 @@ class Form extends \Prefab
 
 		$item['type'] = 'text';
 
-		$item['html'] = '<input type="'. $item['type'] .'" {name} {id} class="form-control {class}" {extra}>';
+		$item['html'] = '<input type="'. $item['type'] .'" {name} {id} class="form-control {class}" value="'. $item['value'] .'" {extra}>';
 
 		return $this->element($item);
 	}
 
-	function addCheck($item = array())
+	function addCheck($item = [])
 	{
 		// Kinda needs this...
 		if (empty($item) || empty($item['name']))
@@ -131,7 +134,7 @@ class Form extends \Prefab
 		return $this->element($item);
 	}
 
-	function addRadio($item = array())
+	function addRadio($item = [])
 	{
 		// Kinda needs this...
 		if (empty($item) || empty($item['name']))
@@ -153,7 +156,7 @@ class Form extends \Prefab
 		$button = [
 			'type' => 'input',
 			'class' => 'btn-default',
-			'value' => '',
+			'text' => '',
 			'extra' => '',
 		];
 
