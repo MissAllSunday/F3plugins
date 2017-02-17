@@ -36,7 +36,7 @@ class Gravatar extends \Prefab
 
 	function get($email = '', $options = [])
 	{
-		$this->_options =  $options ? array_merge($this->_options, $options) : $this->options;
+		$this->options =  $options ? array_merge($this->options, $options) : $this->options;
 
 		return $this->setUrl($email);
 	}
