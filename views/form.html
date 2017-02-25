@@ -20,6 +20,26 @@
 					</div>
 				</div>
 			</case>
+			<case value="radios" break="{{ TRUE }}">
+				<label for="{{@item.id}}" class="col-sm-2 control-label">
+					{{@item.text}}
+				</label>
+				<div class="col-sm-10">
+				<repeat group="{{ @item.values }}" key="{{@key}}" value="{{ @i }}">
+					<div class="radio">
+						<label>
+						<input type="radio" name="{{@item.name}}" value="{{@key}}" {{@i.1 ? 'checked' : ''}}>
+						{{@i.0}}
+						</label>
+						</div>
+				</repeat>
+				<check if="{{ @item.desc }}">
+					<span id="helpBlock" class="help-block">
+						{{ @item.desc}}
+					</span>
+				</check>
+				</div>
+			</case>
 			<case value="hidden" break="{{ TRUE }}">
 				{{@item.html | raw}}
 			</case>

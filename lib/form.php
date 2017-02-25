@@ -163,6 +163,18 @@ class Form extends \Prefab
 		return $this->element($item);
 	}
 
+	function addRadios($item = [])
+	{
+		// Kinda needs this...
+		if (empty($item) || empty($item['name']))
+			return;
+
+		$item['type'] = 'radios';
+		$item['html'] = '';
+
+		return $this->element($item);
+	}
+
 	function addButton($item = [])
 	{
 		$button = [
