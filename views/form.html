@@ -28,7 +28,14 @@
 				<repeat group="{{ @item.values }}" key="{{@key}}" value="{{ @i }}">
 					<div class="radio">
 						<label id="radio_{{@key}}">
-						<input type="radio" name="{{@item.name}}" value="{{@key}}" {{@i.1 ? 'checked' : ''}}>
+							<check if="{{ @_form.options.group }}">
+								<true>
+									<input type="radio" name="{{@_form.options.group .'['. @item.name .']'}}" value="{{@key}}" {{@i.1 ? 'checked' : ''}}>
+								</true>
+								<false>
+									<input type="radio" name="{{@item.name}}" value="{{@key}}" {{@i.1 ? 'checked' : ''}}>
+								</false>
+							</check>
 						{{@i.0}}
 						</label>
 						</div>
