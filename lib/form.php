@@ -14,6 +14,7 @@ class Form extends \Prefab
 	public $items = [];
 	public $buttons = [];
 	protected $_counter = 0;
+	private $f3;
 
 	function __construct()
 	{
@@ -32,7 +33,7 @@ class Form extends \Prefab
 
 		// Allow overwriting the default values.
 		if ($this->f3->exists('FORM'))
-			$this->options = array_merge($this->options, $f3->get('FORM'));
+			$this->options = array_merge($this->options, $this->f3->get('FORM'));
 	}
 
 	function setOptions($options = [])
