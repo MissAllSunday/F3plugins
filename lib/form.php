@@ -13,10 +13,9 @@ class Form extends \Prefab
 	public $options = [];
 	public $items = [];
 	public $buttons = [];
-	protected $_counter = 0;
 	private $f3;
 
-	function __construct()
+	public function __construct()
 	{
 		$this->f3 = \Base::instance();
 
@@ -36,17 +35,17 @@ class Form extends \Prefab
 			$this->options = array_merge($this->options, $this->f3->get('FORM'));
 	}
 
-	function setOptions($options = [])
+	public function setOptions($options = [])
 	{
 		$this->options = array_merge($this->options, $options);
 	}
 
-	function button($button)
+	public function button($button)
 	{
 		return $this->buttons[] = $button;
 	}
 
-	function element($item)
+	public function element($item)
 	{
 		// No text? use the name as a text key then!
 		if (empty($item['text']))
@@ -70,10 +69,10 @@ class Form extends \Prefab
 			(!empty($item['extra']) ? $item['extra'] : ''),
 		], $item['html']);
 
-		return $this->items[++$this->_counter] = $item;
+		return $this->items[$item['name']] = $item;
 	}
 
-	function addTextArea($item = [])
+	public function addTextArea($item = [])
 	{
 		// Kinda needs this...
 		if (empty($item) || empty($item['name']))
@@ -88,7 +87,7 @@ class Form extends \Prefab
 		return $this->element($item);
 	}
 
-	function addHtml($item = [])
+	public function addHtml($item = [])
 	{
 		// Kinda needs this...
 		if (empty($item) || empty($item['name']))
@@ -99,7 +98,7 @@ class Form extends \Prefab
 		return $this->element($item);
 	}
 
-	function addCaptcha($item = [])
+	public function addCaptcha($item = [])
 	{
 		// Kinda needs this...
 		if (empty($item) || empty($item['name']))
@@ -112,7 +111,7 @@ class Form extends \Prefab
 		return $this->element($item);
 	}
 
-	function addHiddenField($name, $value)
+	public function addHiddenField($name, $value)
 	{
 		$item['type'] = 'hidden';
 		$item['name'] = $name;
@@ -120,7 +119,7 @@ class Form extends \Prefab
 		return $this->element($item);
 	}
 
-	function addText($item = [])
+	public function addText($item = [])
 	{
 		// Kinda needs this...
 		if (empty($item) || empty($item['name']))
@@ -133,7 +132,20 @@ class Form extends \Prefab
 		return $this->element($item);
 	}
 
-	function addCheck($item = [])
+	public function addPassword($item = [])
+	{
+		// Kinda needs this...
+		if (empty($item) || empty($item['name']))
+			return;
+
+		$item['type'] = 'password';
+
+		$item['html'] = '<input type="'. $item['type'] .'" {name} {id} class="form-control {class}" value="'. $item['value'] .'" {extra}>';
+
+		return $this->element($item);
+	}
+
+	public function addCheck($item = [])
 	{
 		// Kinda needs this...
 		if (empty($item) || empty($item['name']))
@@ -147,7 +159,7 @@ class Form extends \Prefab
 		return $this->element($item);
 	}
 
-	function addRadio($item = [])
+	public function addRadio($item = [])
 	{
 		// Kinda needs this...
 		if (empty($item) || empty($item['name']))
@@ -164,7 +176,7 @@ class Form extends \Prefab
 		return $this->element($item);
 	}
 
-	function addRadios($item = [])
+	public function addRadios($item = [])
 	{
 		// Kinda needs this...
 		if (empty($item) || empty($item['name']))
@@ -176,7 +188,7 @@ class Form extends \Prefab
 		return $this->element($item);
 	}
 
-	function addButton($item = [])
+	public function addButton($item = [])
 	{
 		$button = [
 			'type' => 'input',
@@ -188,7 +200,19 @@ class Form extends \Prefab
 		return $this->button(array_merge($button, $item));
 	}
 
-	function build($customVar = '')
+	public function addList($item = [])
+	{
+		$item['html'] = '<select {name} {id} class="{class}">';
+
+		foreach ($item['options'] as $value => $name) {
+			$item['html'] .= '<option value="' . $value . '">' . $name . '</option>';
+		}
+		$item['html'] .= '</select>';
+
+		return $this->element($item);
+	}
+
+	public function build($customVar = '')
 	{
 		$this->f3->set(($customVar ?: '_form'), [
 			'options' => $this->options,
@@ -197,17 +221,17 @@ class Form extends \Prefab
 		]);
 	}
 
-	function getCounter()
+	public function getCounter()
 	{
-		return $this->_counter;
+		return count($this->items);
 	}
 
-	function getitems($id = 0)
+	public function getitems($id = 0)
 	{
 		return !empty($id) ? $this->items[$id] : $this->items;
 	}
 
-	function modifyElement($id = 0, $data = array())
+	public function modifyElement($id = 0, $data = array())
 	{
 		if (empty($id) || empty($data) || empty($this->items[$id]))
 			return false;
