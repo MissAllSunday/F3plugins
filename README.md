@@ -92,7 +92,7 @@ $this->options = [
  - type bootstraps form types, horizontal or inline.
  - action An $f3 route where the POST data will be sent, needs to be an already registered route.
  - charset Defaults to $this->f3->get('ENCODING').
- -method post the method to sent the form as.
+ - method post the method to sent the form as.
  - target the form target
 
 Those options can be replaced by a $f3 hive var named FORM.
@@ -152,7 +152,7 @@ $form->addButton([
 	'text' => 'submit',
 ]);
 ```
-This method accepts a text param which is the text the button will display.
+This method accepts a unique text param which is the text the button will display.
 
 Once all the fields has been created, call the build method() to generate an $f3 hive var.
 
