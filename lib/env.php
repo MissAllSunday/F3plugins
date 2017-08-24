@@ -10,12 +10,16 @@
 
 class Env extends \Prefab
 {
+	private $f3;
+	public $options = [];
+	private $_cursor;
+
 	public function __construct()
 	{
 		$this->f3 = \Base::instance();
 
 		$this->options = [
-			'file' => '../',
+			'file' => '../.env',
 			'default' => null,
 		];
 
@@ -29,12 +33,31 @@ class Env extends \Prefab
 		// Work with arrays
 		$files = (array) $files;
 
+		// No files? use the default one
+		$files = $files ?: $this->options['file'];
+
 		// Some light checks
 		foreach ($files as $file)
 		{
 			if (is_dir($file) || !is_readable($file))
 				return; // Show some error or throw an exception, dunno.
-		}
+
+			// Good old fopen to the rescue.
+			$handle = fopen($file, "r");
+			if ($handle)
+			{
+			    while (($line = fgets($handle)) !== false)
+			    	$this->parse($line);
+
+			    fclose($handle);
+			}
+
+
+	}
+
+	protected function parse($line)
+	{
+
 	}
 
 	protected function _setVar($name, $value = null)
