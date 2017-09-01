@@ -12,7 +12,7 @@ class Env extends \Prefab
 {
 	private $f3;
 	public $options = [];
-	private $_cursor;
+	private $_buffer = [];
 
 	public function __construct()
 	{
@@ -20,6 +20,7 @@ class Env extends \Prefab
 
 		$this->options = [
 			'file' => '../.env',
+			'separator' => PHP_EOL,
 		];
 
 		// Allow overwriting the default values
@@ -51,7 +52,18 @@ class Env extends \Prefab
 
 			fclose($handle);
 		}
+	}
 
+	public function loadString($string = "")
+	{
+		// Need something to work with.
+		if (empty($string))
+			return false;
+
+		$line = strtok($string, $this->options['separator']);
+
+		while ($line !== false)
+			$this->parse($line);
 	}
 
 	protected function parse($line)
