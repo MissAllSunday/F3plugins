@@ -90,9 +90,8 @@ class Env extends \Prefab
 	protected function sanitizeVariable($variable)
 	{
 		// Is it a valid PHP var?
-		if (!$this->_isInvalid($variable)) {
-			return
-		}
+		if (!$this->_isInvalid($variable))
+			return null;
 
 		return $variable;
 	}
@@ -102,14 +101,20 @@ class Env extends \Prefab
 		// Remove comments after var definition
 		$value = $this->_rstrstr($value, '#');
 
+		// String?
+		if ($this->_findQuote($value))
+			$value = str_replace($value[0], '', $value);
 
+		// No? then no spaces!
+		else
+			$value = preg_replace('/\s+/', '', $value);
 
 		return $value;
 	}
 
 	protected function _isComment($line)
 	{
-		// Don't you just love PHP quirks?
+		// Should we be using {} or []? the world will never know!
 		return (bool) isset($line[0]) && $line[0] === '#';
 	}
 
@@ -121,7 +126,7 @@ class Env extends \Prefab
 	protected function _isInvalid($variable)
 	{
 		// Line starts with a number
-		if (ctype_digit($line[0]))
+		if (ctype_digit($variable[0]))
 			return false;
 
 		// Needs to pass the regex from PHP manuals
