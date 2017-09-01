@@ -54,7 +54,7 @@ class Env extends \Prefab
 		}
 	}
 
-	public function loadString($string = "")
+	public function loadString($string = "", $returnValues = true)
 	{
 		// Need something to work with.
 		if (empty($string))
@@ -64,6 +64,8 @@ class Env extends \Prefab
 
 		while ($line !== false)
 			$this->parse($line);
+
+		return $this->_buffer;
 	}
 
 	protected function parse($line)
@@ -71,22 +73,52 @@ class Env extends \Prefab
 		$line = trim($line);
 
 		// No empty lines. No comments. No invalid variables
-		if (empty($line) || $this->_isComment($line) || $this->_isInvalid($line))
+		if (empty($line) || $this->_isComment($line))
 			return;
 
 		list($variable, $value) = array_map('trim',explode('=', $line));
 
+		// Be good
+		$value = $this->sanitizeValue($value);
+		$variable = $this->sanitizeVariable($variable);
+
+		$this->_buffer[$variable] = $value;
+
+		return $this->_buffer[$variable];
+	}
+
+	protected function sanitizeVariable($variable)
+	{
+		// Is it a valid PHP var?
+		if (!$this->_isInvalid($variable)) {
+			return
+		}
+
+		return $variable;
+	}
+
+	protected function sanitizeValue($value)
+	{
 		// Remove comments after var definition
 		$value = $this->_rstrstr($value, '#');
 
+
+
+		return $value;
 	}
 
 	protected function _isComment($line)
 	{
+		// Don't you just love PHP quirks?
 		return (bool) isset($line[0]) && $line[0] === '#';
 	}
 
-	protected function _isInvalid($line)
+	protected function _findQuote($value)
+	{
+		return isset($value[0]) && ($value[0] === '"' || $value[0] === '\'');
+	}
+
+	protected function _isInvalid($variable)
 	{
 		// Line starts with a number
 		if (ctype_digit($line[0]))
@@ -95,11 +127,8 @@ class Env extends \Prefab
 		// Needs to pass the regex from PHP manuals
 		if (!preg_match('/^[a-zA-Z\x7f-\xff][a-zA-Z0-9\x7f-\xff]*/', $line))
 			return false;
-	}
 
-	protected function _setVar($name, $value = null)
-	{
-
+		return true;
 	}
 
 	protected function _rstrstr($haystack,$needle)
@@ -107,17 +136,12 @@ class Env extends \Prefab
 		return substr($haystack, 0,strpos($haystack, $needle));
 	}
 
-	protected function sanitizeVariable($variable)
+	protected function _setVar($name, $value = null)
 	{
-		// Do something here
+		$_ENV[$name] = $value;
+		$_SERVER[$name] = $value;
 
-		return $variable;
-	}
-
-	protected function sanitizeValue($value)
-	{
-		$value = $this->_rstrstr($value, '#');
-
-		return $value;
+		if (function_exists('putenv'))
+			putenv("$name=$value");
 	}
 }
